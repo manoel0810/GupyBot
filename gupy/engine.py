@@ -19,9 +19,10 @@ def search(url: str):
     if os.name == 'nt':
         navegador = webdriver.Chrome(options=options)
     else:
-        service = Service(os.path.join(os.getcwd(), "chromedriver"))
+        chromedrivePath = os.path.join(os.getcwd(), "chromedriver")
+        service = Service(chromedrivePath)
         navegador = webdriver.Chrome(service=service, options=options)
-        if not os.path.isfile(chromedriver_path):
+        if not os.path.isfile(chromedrivePath):
             raise FileNotFoundError("chromedriver não encontrado no diretório atual!")
 
     navegador.get(url)
