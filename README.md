@@ -7,7 +7,7 @@ pip install selenium
 
 
 ### Config
-* Create a .env file in the root with your credentials. Like:
+* Create a .env file in the root with your credentials. Make sure your account is enabled to use the SMTP service and that it is a Gmail account:
 
 ``` RAW
 SENDER_EMAIL=seu@email.com
