@@ -1,27 +1,11 @@
-from bs4 import BeautifulSoup
+#template.py
 
-def build(raw_html: str) -> str:
-    soup = BeautifulSoup(raw_html, 'html.parser')
-    
-    link = soup.find('a')['href'] if soup.find('a') else '#'
-    empresa = soup.find('p', class_='sc-bBXxYQ')
-    titulo = soup.find('h3')
-    data_publicacao = soup.find('p', class_='sc-bBXxYQ eJcDNr sc-d9e69618-0 iUzUdL')
-    logo_img = soup.find('img')
+def build(titulo: str, empresa: str, descricao: str, logo: str, link: str, local: str = "Não informado",
+          modelo_trabalho: str = "Remoto", tipo_vaga: str = "Não informado", inclusiva_pcd: bool = False,
+          data_publicacao: str = "") -> str:
 
-    detalhes = soup.find_all('span', class_='sc-23336bc7-1')
-
-    local = detalhes[0].text if len(detalhes) > 0 else 'Não informado'
-    modelo_trabalho = detalhes[1].text if len(detalhes) > 1 else 'Não informado'
-    tipo_vaga = detalhes[2].text if len(detalhes) > 2 else 'Não informado'
-    inclusiva_pcd = detalhes[3].text if len(detalhes) > 3 else None
-
-    empresa = empresa.text.strip() if empresa else 'Empresa não informada'
-    titulo = titulo.text.strip() if titulo else 'Título não informado'
-    data_publicacao = data_publicacao.text.strip() if data_publicacao else 'Data não informada'
-    logo_url = 'https://portal.gupy.io' + logo_img['src'] if logo_img else ''
-
-    pcd_html = f'<p><strong>Inclusiva para PcD</strong></p>' if inclusiva_pcd else ''
+    logo_url = logo if logo else ""
+    pcd_html = '<p><strong>Inclusiva para PcD</strong></p>' if inclusiva_pcd else ''
 
     html = f'''
     <div style="border:1px solid #ccc;padding:16px;border-radius:8px;font-family:sans-serif;max-width:600px;">

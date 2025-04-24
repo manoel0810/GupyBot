@@ -1,65 +1,50 @@
-import os
-import time
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-
-from bs4 import BeautifulSoup
+import requests
 from gupy.template import build
 from database import read, saveLine, GUPY_DATASET
 
-# Diretório onde este arquivo está localizado
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+API_URL = "https://portal.api.gupy.io/api/job"
 
-def search(url: str):
-    options = Options()
-    options.add_argument('--headless=new')
-    options.add_argument('--no-sandbox')
-    options.add_argument('--disable-gpu')
-    options.add_argument('--disable-dev-shm-usage')
-    options.add_argument("--remote-debugging-port=9222")
 
-    if os.name == 'nt':
-        navegador = webdriver.Chrome(options=options)
-    else:
-        chromedriver_path = os.path.join(BASE_DIR, "chromedriver")
-        if not os.path.isfile(chromedriver_path):
-            raise FileNotFoundError("chromedriver não encontrado no diretório atual do engine!")
+def fetch_jobs(query: str, remote_only: bool, limit: int = 10000):
+    params = {
+        "name": query,
+        "offset": 0,
+        "limit": limit,
+        "isRemoteWork": str(remote_only).lower()
+    }
+    response = requests.get(API_URL, params=params)
+    response.raise_for_status()
+    return response.json()
 
-        service = Service(chromedriver_path)
-        navegador = webdriver.Chrome(service=service, options=options)
 
-    navegador.get(url)
-    time.sleep(10)
+def process(key: str, remote_only: bool) -> tuple:
+    print(f"BUSCANDO VAGAS PARA: {key}")
 
-    page_source = navegador.page_source
-    navegador.quit()
-
-    print('SEARCH END')
-    return page_source
-
-def parser(page):
-    print('PARSER INIT')
-    soup = BeautifulSoup(page, 'html.parser')
-
+    data = fetch_jobs(key, remote_only)
+    vagas = data.get("data", [])
     vagas_existentes = read(GUPY_DATASET)
     novas_vagas = []
 
-    for div_vaga in soup.select('div[class^="sc-4d881605-0"]'):
-        link = div_vaga.find('a')
-        if not link or not link.has_attr('href'):
+    for vaga in vagas:
+        vaga_url = vaga.get("jobUrl")
+        if not vaga_url or vaga_url in vagas_existentes:
             continue
 
-        url = link['href']
-        if url not in vagas_existentes:
-            html_vaga_formatado = build(str(link))
-            novas_vagas.append((url, html_vaga_formatado))
-            saveLine(GUPY_DATASET, url)
+        html_formatado = build(
+            titulo=vaga.get("name", "Título não informado"),
+            empresa=vaga.get("careerPageName", "Empresa não informada"),
+            descricao=vaga.get("description", ""),
+            logo=vaga.get("careerPageLogo", ""),
+            link=vaga_url,
+            local=vaga.get("city", "Não informado"),
+            modelo_trabalho=vaga.get("workplaceType", "Não informado"),
+            tipo_vaga=vaga.get("type", "Não informado"),
+            inclusiva_pcd=vaga.get("disabilities", False),
+            data_publicacao=vaga.get("publishedDate", "").split("T")[0]
+        )
 
-    print('PARSER END')
+        novas_vagas.append((vaga_url, html_formatado))
+        saveLine(GUPY_DATASET, vaga_url)
+
+    print(f"{len(novas_vagas)} novas vagas encontradas.")
     return novas_vagas, vagas_existentes
-
-def process(url: str) -> tuple:
-    print(f'INITIALIZING SEARCH FOR ({url})')
-    page = search(url)
-    return parser(page)

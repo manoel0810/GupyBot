@@ -6,30 +6,30 @@ from typing import List, Dict, Any
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 class Group:
-    def __init__(self, url: str, emails: List[str], groupId: int, engine: str, dataset: str):
-        self.url = url
+    def __init__(self, key: str, emails: List[str], groupId: int, remoteOnly: bool, skip: bool):
+        self.key = key
         self.emails = emails
         self.groupId = groupId
-        self.engine = engine
-        self.dataset = dataset
+        self.remoteOnly = remoteOnly
+        self.skip = skip
 
     def to_dict(self) -> Dict[str, Any]:
         return {
-            "url": self.url,
+            "key": self.key,
             "emails": self.emails,
             "groupId": self.groupId,
-            "engine": self.engine,
-            "dataset": self.dataset
+            "remoteOnly": self.remoteOnly,
+            "skip": self.skip
         }
 
     @staticmethod
     def from_dict(data: Dict[str, Any]) -> 'Group':
         return Group(
-            url=data["url"],
+            key=data["key"],
             emails=data["emails"],
             groupId=data["groupId"],
-            engine=data["engine"],
-            dataset=data["dataset"]
+            remoteOnly=data["remoteOnly"],
+            skip=data["skip"]
         )
 
 

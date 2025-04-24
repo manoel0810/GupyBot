@@ -23,4 +23,4 @@ def read(keyName: str) -> set:
 def saveLine(keyName: str, line: str) -> None:
     path = getPath(keyName)
     with open(path, 'a', encoding='utf-8') as f:
-        f.write(line + '\n')
+        f.write('\n' + line)

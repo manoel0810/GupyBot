@@ -28,8 +28,12 @@ def main(base_path: str) -> None:
     manager = JsonGroupManager()
 
     for group in manager.get_all_groups():
-        print(f'\nGROUP ID: {group.groupId}')
-        new, _ = process(group.url)
+        print(f'\nGROUP ID: {group.groupId} | KEY: {group.key}')
+        if group.skip:
+            print('skip group...')
+            continue
+
+        new, _ = process(group.key, group.remoteOnly)
         if new:
             for _, html_formatado in new:
                 sendEmails(NEW_HIRING, html_formatado, group.emails)

@@ -1,8 +1,6 @@
 ### Dependencies
 ``` BASH
-pip install python-dotenv
-pip install requests beautifulsoup4 schedule
-pip install selenium
+pip install python-dotenv requests
 ```
 
 
@@ -21,17 +19,15 @@ LOG_EMAIL=email_de_log@gmail.com
 {
     "groups": [
         {
-            "url": "link to your gupy page filter. Only Gupy links!",
+            "key": "your search key, ie: .net",
             "emails": [
                 "e-mails to send"
             ],
             "groupId": 1, 
-            "engine": "gupy",
-            "dataset": "gupy.txt"
+            "remoteOnly": true,
+            "skip": false
         }
     ]
 }
 ```
 * You can have more than one group
-
-#### If you are using an ARM machine or other architecture that does not natively support the Chrome driver, make sure to download the driver for your architecture and save it in the project root with the name "chromedriver" only.
