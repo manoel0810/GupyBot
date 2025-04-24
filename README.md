@@ -34,4 +34,4 @@ LOG_EMAIL=email_de_log@gmail.com
 ```
 * You can have more than one group
 
-#### If you are using an ARM machine or other architecture that does not natively support the Chrome driver, make sure to download the driver for your architecture and save it in the project root with the name "chromedriver" only.
+#### If you are using an ARM machine or other architecture that does not natively support the Chrome driver, make sure to download the driver for your architecture and save it in the folder "gupy" with the name "chromedriver" only.
