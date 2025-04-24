@@ -11,10 +11,15 @@ NEW_HIRING = 'Nova Vaga Detectada'
 AUDIT_INTERVAL_HOUR = 6
 
 def logHeaders() -> None:
+    print('')
     print('*'*30, 'Work Info', '*'*30)
     print(f'Work Dir: {os.getcwd()}')
-    print(f'Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}')
-    print('*'*69, '\n')
+
+    agora = datetime.now()
+    data_formatada = agora.strftime('%Y-%m-%d %H:%M:%S')
+
+    print(f'Date: {data_formatada}')
+    print('*'*71, '\n')
 
 def main(base_path: str) -> None:
     os.chdir(base_path)
