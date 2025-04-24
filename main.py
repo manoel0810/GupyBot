@@ -1,29 +1,50 @@
+import argparse
+import os
 from groupManenger import JsonGroupManager
 from gupy.engine import process
 from emailEngine import sendEmails, sendLogEmail
 from audit import timeSinceLastAudit, updateAuditTime
+from database import read, GUPY_DATASET
+from datetime import datetime
 
 NEW_HIRING = 'Nova Vaga Detectada'
 AUDIT_INTERVAL_HOUR = 6
 
-def main() -> None:
+def logHeaders() -> None:
+    print('*'*30, 'Work Info', '*'*30)
+    print(f'Work Dir: {os.getcwd()}')
+    print(f'Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}')
+    print('*'*69, '\n')
+
+def main(base_path: str) -> None:
+    os.chdir(base_path)
+
+    logHeaders()
     manager = JsonGroupManager()
 
     for group in manager.get_all_groups():
         print(f'\nGROUP ID: {group.groupId}')
-        new, registered = process(group.url)
+        new, _ = process(group.url)
         if new:
             for _, html_formatado in new:
                 sendEmails(NEW_HIRING, html_formatado, group.emails)
 
     if timeSinceLastAudit() >= AUDIT_INTERVAL_HOUR:
-                ultima_vaga = next(iter(registered)) if registered else 'Nenhuma'
+                regs = read(GUPY_DATASET)
+                ultima_vaga = next(iter(regs)) if regs else 'Nenhuma'
                 sendLogEmail(
-                        len(registered),
+                        len(regs),
                         ultima_vaga
                 )
                 updateAuditTime()
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--basepath", 
+        help="Caminho base do projeto",
+        default=os.getcwd()
+    )
+    args = parser.parse_args()
+    main(args.basepath)

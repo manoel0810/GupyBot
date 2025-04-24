@@ -56,6 +56,6 @@ def parser(page):
     return novas_vagas, vagas_existentes
 
 def process(url: str) -> tuple:
-    print(f'INITIALIZING SEARCH FOR ({url})\n')
+    print(f'INITIALIZING SEARCH FOR ({url})')
     page = search(url)
     return parser(page)
