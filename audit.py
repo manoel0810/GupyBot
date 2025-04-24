@@ -1,7 +1,9 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 import os
 
-AUDIT_PATH = os.path.join(os.getcwd(), "audit_log.txt")
+# Base para salvar o log de auditoria no mesmo diretório deste arquivo
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+AUDIT_PATH = os.path.join(BASE_DIR, "audit_log.txt")
 
 def timeSinceLastAudit():
     if not os.path.exists(AUDIT_PATH):

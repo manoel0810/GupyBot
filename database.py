@@ -1,10 +1,13 @@
 import os
 
-# Define o diretório de trabalho como o diretório atual + "datasets"
-WORK_DIR = os.path.join(os.getcwd(), "datasets")
+# Define o diretório de trabalho como o diretório onde este arquivo está + "datasets"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+WORK_DIR = os.path.join(BASE_DIR, "datasets")
+
+# Garante que a pasta exista
 os.makedirs(WORK_DIR, exist_ok=True)
 
-#DATASETS NAME
+# Nome do arquivo de dataset
 GUPY_DATASET = "gupy.txt"
 
 def getPath(keyName: str) -> str:

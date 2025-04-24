@@ -2,6 +2,9 @@ import json
 import os
 from typing import List, Dict, Any
 
+# Diretório onde este script está localizado
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 class Group:
     def __init__(self, url: str, emails: List[str], groupId: int, engine: str, dataset: str):
         self.url = url
@@ -32,7 +35,7 @@ class Group:
 
 class JsonGroupManager:
     def __init__(self, filename: str = "groups.json"):
-        self.filepath = os.path.join(os.getcwd(), filename)
+        self.filepath = os.path.join(BASE_DIR, filename)
         self.groups: List[Group] = []
         self.load()
 

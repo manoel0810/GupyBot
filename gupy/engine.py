@@ -8,6 +8,9 @@ from bs4 import BeautifulSoup
 from gupy.template import build
 from database import read, saveLine, GUPY_DATASET
 
+# Diretório onde este arquivo está localizado
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 def search(url: str):
     options = Options()
     options.add_argument('--headless=new')
@@ -19,11 +22,12 @@ def search(url: str):
     if os.name == 'nt':
         navegador = webdriver.Chrome(options=options)
     else:
-        chromedrivePath = os.path.join(os.getcwd(), "chromedriver")
-        service = Service(chromedrivePath)
+        chromedriver_path = os.path.join(BASE_DIR, "chromedriver")
+        if not os.path.isfile(chromedriver_path):
+            raise FileNotFoundError("chromedriver não encontrado no diretório atual do engine!")
+
+        service = Service(chromedriver_path)
         navegador = webdriver.Chrome(service=service, options=options)
-        if not os.path.isfile(chromedrivePath):
-            raise FileNotFoundError("chromedriver não encontrado no diretório atual!")
 
     navegador.get(url)
     time.sleep(10)
