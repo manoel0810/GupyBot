@@ -1,6 +1,8 @@
 # .gitignore
 .env
 __pycache__/
+datasets/
+*.txt
 *.pyc
 *.log
 groups.json
