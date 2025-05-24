@@ -28,14 +28,15 @@ def build(titulo: str, empresa: str, descricao: str, logo: str, link: str, local
 
 
 def build_multiple(vagas: list[dict]) -> str:
-    # Cabeçalho do email com título
+    # Container centralizado com padding lateral, alinhado ao centro
     header = '''
-    <h1 style="font-family:sans-serif;">🚨 Novas vagas publicadas!</h1>
-    <p style="font-family:sans-serif;">Confira abaixo as últimas oportunidades encontradas:</p>
-    <div style="display:flex;flex-direction:column;gap:24px;">
+    <div style="max-width:1000px;margin:0 auto;padding:24px;">
+        <h1 style="font-family:sans-serif;text-align:center;">🚨 Novas vagas publicadas!</h1>
+        <p style="font-family:sans-serif;text-align:center;">Confira abaixo as últimas oportunidades encontradas:</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:32px;">
     '''
 
-    footer = '</div>'
+    footer = '</div></div>'
     vagas_html = ""
 
     for vaga in vagas:
