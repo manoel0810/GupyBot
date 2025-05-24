@@ -1,5 +1,4 @@
 import requests
-from gupy.template import build
 from database import read, saveLine, GUPY_DATASET
 
 API_URL = "https://portal.api.gupy.io/api/job"
@@ -30,20 +29,20 @@ def process(key: str, remote_only: bool) -> tuple:
         if not vaga_url or vaga_url in vagas_existentes:
             continue
 
-        html_formatado = build(
-            titulo=vaga.get("name", "Título não informado"),
-            empresa=vaga.get("careerPageName", "Empresa não informada"),
-            descricao=vaga.get("description", ""),
-            logo=vaga.get("careerPageLogo", ""),
-            link=vaga_url,
-            local=vaga.get("city", "Não informado"),
-            modelo_trabalho=vaga.get("workplaceType", "Não informado"),
-            tipo_vaga=vaga.get("type", "Não informado"),
-            inclusiva_pcd=vaga.get("disabilities", False),
-            data_publicacao=vaga.get("publishedDate", "").split("T")[0]
-        )
+        vaga_dict = {
+            "titulo": vaga.get("name", "Título não informado"),
+            "empresa": vaga.get("careerPageName", "Empresa não informada"),
+            "descricao": vaga.get("description", ""),
+            "logo": vaga.get("careerPageLogo", ""),
+            "link": vaga_url,
+            "local": vaga.get("city", "Não informado"),
+            "modelo_trabalho": vaga.get("workplaceType", "Não informado"),
+            "tipo_vaga": vaga.get("type", "Não informado"),
+            "inclusiva_pcd": bool(vaga.get("disabilities", False)),
+            "data_publicacao": vaga.get("publishedDate", "").split("T")[0]
+        }
 
-        novas_vagas.append((vaga_url, html_formatado))
+        novas_vagas.append(vaga_dict)
         saveLine(GUPY_DATASET, vaga_url)
 
     print(f"{len(novas_vagas)} novas vagas encontradas.")

@@ -6,6 +6,7 @@ from emailEngine import sendEmails, sendLogEmail
 from audit import timeSinceLastAudit, updateAuditTime
 from database import read, GUPY_DATASET
 from datetime import datetime
+from gupy.template import build_multiple
 
 NEW_HIRING = 'Nova Vaga Detectada'
 AUDIT_INTERVAL_HOUR = 6
@@ -23,7 +24,6 @@ def logHeaders() -> None:
 
 def main(base_path: str) -> None:
     os.chdir(base_path)
-
     logHeaders()
     manager = JsonGroupManager()
 
@@ -33,10 +33,10 @@ def main(base_path: str) -> None:
             print('skip group...')
             continue
 
-        new, _ = process(group.key, group.remoteOnly)
-        if new:
-            for _, html_formatado in new:
-                sendEmails(NEW_HIRING, html_formatado, group.emails)
+        novas_vagas, _ = process(group.key, group.remoteOnly)
+        if novas_vagas:
+            html_unico = build_multiple(novas_vagas)
+            sendEmails(NEW_HIRING, html_unico, group.emails)
 
     if timeSinceLastAudit() >= AUDIT_INTERVAL_HOUR:
                 regs = read(GUPY_DATASET)
