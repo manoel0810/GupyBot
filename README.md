@@ -19,9 +19,10 @@ LOG_EMAIL=email_de_log@gmail.com
 {
     "groups": [
         {
-            "key": "your search key, ie: .net",
+            "keys": ["your search key, ie: .net", "another key, ie: python"],
             "emails": [
-                "e-mails to send"
+                "email1@to.send",
+                "email2@to.send"
             ],
             "groupId": 1, 
             "remoteOnly": true,

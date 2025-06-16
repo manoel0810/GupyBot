@@ -6,16 +6,18 @@ from typing import List, Dict, Any
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 class Group:
-    def __init__(self, key: str, emails: List[str], groupId: int, remoteOnly: bool, skip: bool):
-        self.key = key
+    # ATUALIZADO: 'key: str' foi alterado para 'keys: List[str]'
+    def __init__(self, keys: List[str], emails: List[str], groupId: int, remoteOnly: bool, skip: bool):
+        self.keys = keys
         self.emails = emails
         self.groupId = groupId
         self.remoteOnly = remoteOnly
         self.skip = skip
 
     def to_dict(self) -> Dict[str, Any]:
+        # ATUALIZADO: 'key' agora é 'keys'
         return {
-            "key": self.key,
+            "keys": self.keys,
             "emails": self.emails,
             "groupId": self.groupId,
             "remoteOnly": self.remoteOnly,
@@ -24,8 +26,9 @@ class Group:
 
     @staticmethod
     def from_dict(data: Dict[str, Any]) -> 'Group':
+        # ATUALIZADO: 'key' agora é 'keys'
         return Group(
-            key=data["key"],
+            keys=data["keys"],
             emails=data["emails"],
             groupId=data["groupId"],
             remoteOnly=data["remoteOnly"],
