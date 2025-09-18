@@ -1,18 +1,12 @@
-from datetime import datetime
-import os
+# audit.py
+from datetime import datetime, timedelta
+from database import log_audit_event, get_last_audit_time
 
-# Base para salvar o log de auditoria no mesmo diretório deste arquivo
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-AUDIT_PATH = os.path.join(BASE_DIR, "audit_log.txt")
-
-def timeSinceLastAudit():
-    if not os.path.exists(AUDIT_PATH):
+def timeSinceLastAudit(event_type: str) -> float:
+    last_execution = get_last_audit_time(event_type)
+    if not last_execution:
         return float('inf')  # Se não existe, força envio
-    with open(AUDIT_PATH, 'r') as f:
-        last_execution_str = f.read().strip()
-    last_execution = datetime.fromisoformat(last_execution_str)
     return (datetime.now() - last_execution).total_seconds() / 3600  # horas
 
-def updateAuditTime():
-    with open(AUDIT_PATH, 'w') as f:
-        f.write(datetime.now().isoformat())
+def updateAuditTime(event_type: str, details: str = ""):
+    log_audit_event(event_type, details)

@@ -5,5 +5,7 @@ datasets/
 *.txt
 *.pyc
 *.log
-groups.json
+*.db
+*.json
+*.migrated
 audit_log.txt

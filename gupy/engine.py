@@ -1,27 +1,26 @@
+# gupy/engine.py
 import requests
-from database import read, saveLine, GUPY_DATASET
+from database import get_visited_urls, add_visited_url
 
-API_URL = "https://portal.api.gupy.io/api/job"
-
+API_URL = "https://employability-portal.gupy.io/api/v1/jobs"
 
 def fetch_jobs(query: str, remote_only: bool, limit: int = 10000):
     params = {
-        "name": query,
-        "offset": 0,
-        "limit": limit,
+        "jobName": query,
+        #"offset": 0,
+        #"limit": limit,
         "isRemoteWork": str(remote_only).lower()
     }
     response = requests.get(API_URL, params=params)
     response.raise_for_status()
     return response.json()
 
-
 def process(key: str, remote_only: bool) -> tuple:
     print(f"BUSCANDO VAGAS PARA: {key}")
 
     data = fetch_jobs(key, remote_only)
     vagas = data.get("data", [])
-    vagas_existentes = read(GUPY_DATASET)
+    vagas_existentes = get_visited_urls()
     novas_vagas = []
 
     for vaga in vagas:
@@ -43,7 +42,7 @@ def process(key: str, remote_only: bool) -> tuple:
         }
 
         novas_vagas.append(vaga_dict)
-        saveLine(GUPY_DATASET, vaga_url)
+        add_visited_url(vaga_url)
 
     print(f"{len(novas_vagas)} novas vagas encontradas.")
     return novas_vagas, vagas_existentes
